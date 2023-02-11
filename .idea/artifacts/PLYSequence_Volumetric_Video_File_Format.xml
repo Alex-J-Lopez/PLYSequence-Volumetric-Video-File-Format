@@ -1,0 +1,19 @@
+<component name="ArtifactManager">
+  <artifact type="jpackage" name="PLYSequence-Volumetric-Video-File-Format">
+    <output-path>$PROJECT_DIR$/out/artifacts/PLYSequence_Volumetric_Video_File_Format</output-path>
+    <properties id="jpackage-properties">
+      <options>
+        <option name="version" value="" />
+        <option name="copyright" value="" />
+        <option name="description" value="" />
+        <option name="vendor" value="" />
+        <option name="mainClass" value="generator.ProgramDriver" />
+      </options>
+    </properties>
+    <root id="root">
+      <element id="archive" name="PLYSequence_Volumetric_Video_File_Format.jar">
+        <element id="module-output" name="PLYSequence-Volumetric-Video-File-Format" />
+      </element>
+    </root>
+  </artifact>
+</component>
