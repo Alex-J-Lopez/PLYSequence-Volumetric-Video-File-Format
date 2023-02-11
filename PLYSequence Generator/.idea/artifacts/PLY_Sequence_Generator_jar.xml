@@ -1,0 +1,11 @@
+<component name="ArtifactManager">
+  <artifact name="PLY Sequence Generator:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/PLY_Sequence_Generator_jar</output-path>
+    <root id="root">
+      <element id="archive" name="PLY Sequence Generator.jar">
+        <element id="module-output" name="PLY Sequence Generator" />
+      </element>
+      <element id="library" level="application" name="lib" />
+    </root>
+  </artifact>
+</component>
