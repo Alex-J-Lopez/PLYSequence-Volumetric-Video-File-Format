@@ -1,6 +1,0 @@
-Manifest-Version: 1.0
-Main-Class: MainProgramStructure.JarRunner
-Class-Path: javafx-swt.jar javafx.web.jar javafx.base.jar javafx.fxml.ja
- r javafx.media.jar javafx.swing.jar javafx.controls.jar javafx.graphics
- .jar
-

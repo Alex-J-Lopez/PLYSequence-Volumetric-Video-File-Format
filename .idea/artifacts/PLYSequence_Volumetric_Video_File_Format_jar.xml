@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" build-on-make="true" name="PLYSequence-Volumetric-Video-File-Format:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/PLYSequence_Volumetric_Video_File_Format_jar</output-path>
+    <root id="archive" name="PLYSequence-Volumetric-Video-File-Format.jar">
+      <element id="module-output" name="PLYSequence-Volumetric-Video-File-Format" />
+    </root>
+  </artifact>
+</component>
