@@ -5,9 +5,10 @@ using System.Collections.Generic;
 
 public class PLYSequenceReader : MonoBehaviour
 {
-    public TextAsset plyFile;
+    public string plyFile;
+    public float frameTime;
     private int vertexCount;
-    private StringReader reader;
+    private StreamReader reader;
     private List<Vector3> vertices = new List<Vector3>();
     private List<Color> colors = new List<Color>();
     private Mesh mesh;
@@ -16,8 +17,8 @@ public class PLYSequenceReader : MonoBehaviour
     {
         if (plyFile != null)
         {
-            reader = new StringReader(plyFile.text);
-            InvokeRepeating("methodRunner", 0f, 0.08f);
+            reader = new StreamReader(plyFile);
+            InvokeRepeating("methodRunner", 0f, frameTime);
         }
         else
         {
