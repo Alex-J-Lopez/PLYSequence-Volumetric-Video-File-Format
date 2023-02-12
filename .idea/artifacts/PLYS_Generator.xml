@@ -1,6 +1,6 @@
 <component name="ArtifactManager">
-  <artifact type="jpackage" name="PLYSequence-Volumetric-Video-File-Format">
-    <output-path>$PROJECT_DIR$/out/artifacts/PLYSequence_Volumetric_Video_File_Format</output-path>
+  <artifact type="jpackage" name="PLYS Generator">
+    <output-path>$PROJECT_DIR$/out/artifacts/PLYS_Generator</output-path>
     <properties id="jpackage-properties">
       <options>
         <option name="version" value="" />
