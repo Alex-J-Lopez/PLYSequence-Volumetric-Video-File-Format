@@ -19,9 +19,7 @@
                <children>
                   <ButtonBar>
                     <buttons>
-                      <Button mnemonicParsing="false" onAction="#selectDirectory" text="Select PLY Directory" />
-                        <Button mnemonicParsing="false" onAction="#generatePLYS" text="Process Directory" />
-                        <Button mnemonicParsing="false" onAction="#saveFile" text="Save .plys" />
+                      <Button mnemonicParsing="false" onAction="#runGeneration" text="Generate PLY" />
                     </buttons>
                   </ButtonBar>
                   <HBox alignment="CENTER">

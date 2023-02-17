@@ -81,7 +81,6 @@ public class MainGUIController {
     /**
      * This method allows the user to select a directory.
      */
-    @FXML
     private void selectDirectory() {
         final DirectoryChooser chooser = new DirectoryChooser();
         chooser.setTitle("Select the directory containing the PLY files to be processed");
@@ -93,7 +92,6 @@ public class MainGUIController {
      * Generates the plys file.
      * @throws IOException todo
      */
-    @FXML
     private void generatePLYS() throws IOException {
         new Alert(Alert.AlertType.INFORMATION,
                 "Started File generation. This may take a few minutes. Press OK to continue.",
@@ -129,7 +127,6 @@ public class MainGUIController {
      *
      * @throws IOException todo
      */
-    @FXML
     private void saveFile() throws IOException {
         //todo: better error handling.
         final FileChooser chooser = new FileChooser();
@@ -146,5 +143,16 @@ public class MainGUIController {
                     ButtonType.OK).show();
         }
         tempFile = Files.createTempFile(TEMP_PREFIX, PLYS_SUFFIX);
+    }
+    
+    /**
+     * Runs the generation process.
+     * @throws IOException todo
+     */
+    @FXML
+    private void runGeneration() throws IOException {
+        selectDirectory();
+        generatePLYS();
+        saveFile();
     }
 }
