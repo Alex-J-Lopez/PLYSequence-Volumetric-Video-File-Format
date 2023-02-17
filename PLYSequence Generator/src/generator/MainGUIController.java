@@ -70,11 +70,8 @@ public class MainGUIController {
     
     /**
      * This method initializes the controller.
-     *
-     * @throws IOException if there was a problem creating a temp file.
      */
-    public void initialize() throws IOException {
-        tempFile = Files.createTempFile(TEMP_PREFIX, PLYS_SUFFIX);
+    public void initialize() {
         stage.show();
     }
     
@@ -96,6 +93,11 @@ public class MainGUIController {
         new Alert(Alert.AlertType.INFORMATION,
                 "Started File generation. This may take a few minutes. Press OK to continue.",
                 ButtonType.OK).showAndWait();
+        if (compressionMode.getSelectedToggle() == gZIPCompression) {
+            tempFile = Files.createTempFile(TEMP_PREFIX, PLYS_SUFFIX + ".gz");
+        } else {
+            tempFile = Files.createTempFile(TEMP_PREFIX, PLYS_SUFFIX);
+        }
         int numProcessed = 0;
         try (OutputStream outputStream = getOutputStream()) {
             for (File file : childFiles) {
@@ -124,14 +126,18 @@ public class MainGUIController {
     
     /**
      * Saves the file.
-     *
-     * @throws IOException todo
      */
-    private void saveFile() throws IOException {
+    private void saveFile() {
         //todo: better error handling.
         final FileChooser chooser = new FileChooser();
-        final FileChooser.ExtensionFilter extensionFilter =
+        final FileChooser.ExtensionFilter extensionFilter;
+        if (compressionMode.getSelectedToggle() == gZIPCompression) {
+            extensionFilter =
+                new FileChooser.ExtensionFilter("Compressed PLYS", '*' + PLYS_SUFFIX + ".gz");
+        } else {
+             extensionFilter =
                 new FileChooser.ExtensionFilter("PLYS", '*' + PLYS_SUFFIX);
+        }
         chooser.getExtensionFilters().add(extensionFilter);
         chooser.setSelectedExtensionFilter(extensionFilter);
         chooser.setTitle("Choose save destination");
@@ -142,7 +148,6 @@ public class MainGUIController {
             new Alert(Alert.AlertType.WARNING, "Save error: " + e.getMessage(),
                     ButtonType.OK).show();
         }
-        tempFile = Files.createTempFile(TEMP_PREFIX, PLYS_SUFFIX);
     }
     
     /**
