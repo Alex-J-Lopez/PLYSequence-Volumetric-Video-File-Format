@@ -8,6 +8,8 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ProgressBar;
+import javafx.scene.control.RadioButton;
+import javafx.scene.control.ToggleGroup;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -16,11 +18,12 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.nio.charset.StandardCharsets;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.file.Files;
-import java.util.Objects;
-import java.util.Scanner;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
+import java.util.zip.GZIPOutputStream;
 
 /**
  * This class holds the controller for the program.
@@ -42,38 +45,36 @@ public class MainGUIController {
     @FXML
     private ProgressBar progressBar;
     /**
-     * Number of files being processed.
-     */
-    private int numFiles;
-    /**
-     * Number of files processed.
-     */
-    private int numProcessed;
-    /**
-     * Directory being worked with.
-     */
-    private File directory;
-    /**
      * List of files in the working directory.
      */
     private File[] childFiles;
     /**
      * Temporary file for generating .plys.
      */
-    private File tempFile;
+    private Path tempFile;
     /**
      * The stage.
      */
     @FXML
     private Stage stage;
+    /**
+     * Which compression mode is active.
+     */
+    @FXML
+    private ToggleGroup compressionMode;
+    /**
+     * Button for GZIP compression.
+     */
+    @FXML
+    private RadioButton gZIPCompression;
     
     /**
      * This method initializes the controller.
      *
-     * @throws IOException If there was a problem creating a temp file.
+     * @throws IOException if there was a problem creating a temp file.
      */
     public void initialize() throws IOException {
-        tempFile = File.createTempFile(TEMP_PREFIX, PLYS_SUFFIX);
+        tempFile = Files.createTempFile(TEMP_PREFIX, PLYS_SUFFIX);
         stage.show();
     }
     
@@ -82,40 +83,45 @@ public class MainGUIController {
      */
     @FXML
     private void selectDirectory() {
-        DirectoryChooser chooser = new DirectoryChooser();
+        final DirectoryChooser chooser = new DirectoryChooser();
         chooser.setTitle("Select the directory containing the PLY files to be processed");
-        directory = chooser.showDialog(stage);
-        numFiles = Objects.requireNonNull(directory.listFiles()).length;
-        numProcessed = 0;
+        File directory = chooser.showDialog(stage);
         childFiles = directory.listFiles();
-        updateProgress();
     }
     
     /**
      * Generates the plys file.
+     * @throws IOException todo
      */
     @FXML
-    private void generatePLYS() {
+    private void generatePLYS() throws IOException {
         new Alert(Alert.AlertType.INFORMATION,
-                "Started File generation. This may take a few minutes. Press OK to continue",
+                "Started File generation. This may take a few minutes. Press OK to continue.",
                 ButtonType.OK).showAndWait();
-        for (File file : childFiles) {
-            try (Scanner in = new Scanner(new FileInputStream(file), StandardCharsets.UTF_8)) {
-                try (PrintWriter write = new PrintWriter(new FileOutputStream(tempFile, true), true,
-                        StandardCharsets.UTF_8)) {
-                    while (in.hasNextLine()) {
-                        write.println(in.nextLine());
-                    }
+        int numProcessed = 0;
+        try (OutputStream outputStream = getOutputStream()) {
+            for (File file : childFiles) {
+                try (InputStream in = new FileInputStream(file)) {
+                    outputStream.write(in.readAllBytes());
+                    numProcessed++;
+                } catch (IOException e) {
+                    new Alert(Alert.AlertType.WARNING, "Read error: " + e.getMessage(),
+                            ButtonType.OK).show();
                 }
-                numProcessed++;
-            } catch (IOException e) {
-                new Alert(Alert.AlertType.WARNING, "Read error: " + e.getMessage(),
-                        ButtonType.OK).show();
+                progressBar.setProgress((double) numProcessed / childFiles.length);
             }
-            updateProgress();
         }
         new Alert(Alert.AlertType.INFORMATION, "Generating .PLYS file Complete",
                 ButtonType.OK).show();
+    }
+    
+    private OutputStream getOutputStream() throws IOException {
+        OutputStream outputStream = new FileOutputStream(tempFile.toFile(), true);
+        if (compressionMode.getSelectedToggle() == gZIPCompression) {
+            // Note: FilterOutputStream closes its filtered stream with itself.
+            outputStream = new GZIPOutputStream(outputStream);
+        }
+        return outputStream;
     }
     
     /**
@@ -126,30 +132,19 @@ public class MainGUIController {
     @FXML
     private void saveFile() throws IOException {
         //todo: better error handling.
-        FileChooser chooser = new FileChooser();
-        FileChooser.ExtensionFilter extensionFilter =
+        final FileChooser chooser = new FileChooser();
+        final FileChooser.ExtensionFilter extensionFilter =
                 new FileChooser.ExtensionFilter("PLYS", '*' + PLYS_SUFFIX);
         chooser.getExtensionFilters().add(extensionFilter);
         chooser.setSelectedExtensionFilter(extensionFilter);
         chooser.setTitle("Choose save destination");
-        File newFile = chooser.showSaveDialog(stage);
+        final File newFile = chooser.showSaveDialog(stage);
         try {
-            Files.move(tempFile.toPath(), newFile.toPath());
+            Files.move(tempFile, newFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
         } catch (IOException e) {
             new Alert(Alert.AlertType.WARNING, "Save error: " + e.getMessage(),
                     ButtonType.OK).show();
         }
-        numFiles = 0;
-        numProcessed = 0;
-        directory = null;
-        Files.delete(tempFile.toPath());
-        tempFile = File.createTempFile(TEMP_PREFIX, PLYS_SUFFIX);
-    }
-    
-    /**
-     * Update the progress bar.
-     */
-    private void updateProgress() {
-        progressBar.setProgress((double) numProcessed / numFiles);
+        tempFile = Files.createTempFile(TEMP_PREFIX, PLYS_SUFFIX);
     }
 }

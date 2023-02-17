@@ -3,16 +3,19 @@
 <?import javafx.scene.Scene?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ButtonBar?>
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ProgressBar?>
+<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.ToggleGroup?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.stage.Stage?>
-
 
 <Stage fx:id="stage" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="generator.MainGUIController">
    <scene>
       <Scene>
          <root>
-            <VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity">
+            <VBox alignment="TOP_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity">
                <children>
                   <ButtonBar>
                     <buttons>
@@ -21,6 +24,21 @@
                         <Button mnemonicParsing="false" onAction="#saveFile" text="Save .plys" />
                     </buttons>
                   </ButtonBar>
+                  <HBox alignment="CENTER">
+                     <children>
+                        <Label text="Compression Mode: " />
+                        <HBox>
+                           <children>
+                              <RadioButton mnemonicParsing="false" selected="true" text="None">
+                                 <toggleGroup>
+                                    <ToggleGroup fx:id="compressionMode" />
+                                 </toggleGroup>
+                              </RadioButton>
+                              <RadioButton fx:id="gZIPCompression" mnemonicParsing="false" text="GZIP" toggleGroup="$compressionMode" />
+                           </children>
+                        </HBox>
+                     </children>
+                  </HBox>
                   <ProgressBar fx:id="progressBar" maxWidth="1.7976931348623157E308" progress="0.0" />
                </children>
             </VBox>
