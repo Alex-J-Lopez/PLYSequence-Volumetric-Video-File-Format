@@ -28,7 +28,7 @@ import java.util.zip.GZIPOutputStream;
 /**
  * This class holds the controller for the program.
  *
- * @author Alex Lopez & Patrick Rafferty
+ * @author Alex Lopez and Patrick Rafferty
  */
 public class MainGUIController {
     /**
