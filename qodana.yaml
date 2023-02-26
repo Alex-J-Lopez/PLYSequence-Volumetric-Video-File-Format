@@ -1,0 +1,7 @@
+version: "1.0"
+exclude:
+  - name: All
+    paths:
+      - docs
+include:
+  - name: CheckDependencyLicenses
