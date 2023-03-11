@@ -15,7 +15,6 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 import java.io.IOException;
-import java.nio.file.Path;
 import java.util.Objects;
 
 /**
@@ -29,10 +28,6 @@ public class MainGUIController {
      */
     @FXML
     private ProgressBar progressBar;
-    /**
-     * Temporary file for generating .plys.
-     */
-    private Path tempFile;
     /**
      * The stage.
      */
