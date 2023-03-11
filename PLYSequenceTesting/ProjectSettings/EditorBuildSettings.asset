@@ -4,7 +4,10 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes: []
+  m_Scenes:
+  - enabled: 1
+    path: Assets/Scenes/Example of Point Cloud Render.unity
+    guid: 9fc0d4010bbf28b4594072e72b8655ab
   m_configObjects:
     UnityEditor.XR.ARCore.ARCoreSettings: {fileID: 11400000, guid: cf99be459c17f854abed74a5934cf262, type: 2}
     com.unity.mars-ar-foundation-providers.xr_subsystem_settings: {fileID: 11400000, guid: 1b69c69296dbd4e74b55b1c3a2190c7c, type: 2}
