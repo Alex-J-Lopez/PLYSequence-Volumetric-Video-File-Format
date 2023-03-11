@@ -28,7 +28,7 @@ public class PLYSGenerator {
     /**
      * A CRLF byte array.
      */
-    private static final byte[] CRLF = {0x0A, 0x0D};
+    private static final byte[] CRLF = {0x0D, 0x0A};
     /**
      * The temporary file used for storing the PLYS.
      */
