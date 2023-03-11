@@ -26,6 +26,10 @@ public class PLYSGenerator {
      */
     static final String PLYS_SUFFIX = ".plys";
     /**
+     * A CRLF byte array.
+     */
+    private static final byte[] CRLF = {0x0A, 0x0D};
+    /**
      * The temporary file used for storing the PLYS.
      */
     private final Path tempFile;
@@ -57,6 +61,7 @@ public class PLYSGenerator {
             for (File file : childFiles) {
                 try (InputStream in = new FileInputStream(file)) {
                     outputStream.write(in.readAllBytes());
+                    outputStream.write(CRLF);
                     numProcessed++;
                 }
             }

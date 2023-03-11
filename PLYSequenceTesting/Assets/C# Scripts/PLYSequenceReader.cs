@@ -91,6 +91,8 @@ public class PLYSequenceReader : MonoBehaviour
                     colors.Add(new Color(r / 255f, g / 255f, b / 255f));
                 }
 
+                reader.ReadLine();
+                reader.ReadLine();
                 break;
             case "format binary_little_endian 1.0":
                 throw new Exception("TODO"); //todo
