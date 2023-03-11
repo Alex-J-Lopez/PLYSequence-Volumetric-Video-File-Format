@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using UnityEngine;
 using System.Collections;
@@ -6,21 +7,26 @@ using System.Collections.Generic;
 public class PLYSequenceReader : MonoBehaviour
 {
     public string plyFile;
-    public float frameRate; // Desired frame rate. This will be recalculated into frame time later for invoke repeating.
+
+    public float
+        frameRate; // Desired frame rate. This will be recalculated into frame time later for invoke repeating.
+
     private int vertexCount;
     private StreamReader reader;
     private List<Vector3> vertices = new List<Vector3>();
     private List<Color> colors = new List<Color>();
     private Mesh mesh;
+    private List<string> header;
 
     void Start()
     {
-        float frameTime  = 1/frameRate; // Calculate frame time.
+        float frameTime = 1 / frameRate; // Calculate frame time.
         // Check if the ply File is null before attempting to open it.
         if (plyFile != null)
         {
             reader = new StreamReader(plyFile);
-            InvokeRepeating("methodRunner", 0f, frameTime); // This invoke repeating method runs once per frame time amount of time.
+            InvokeRepeating("methodRunner", 0f,
+                frameTime); // This invoke repeating method runs once per frame time amount of time.
         }
         else
         {
@@ -45,26 +51,22 @@ public class PLYSequenceReader : MonoBehaviour
     */
     private void GetVertexAndColor()
     {
-        reader.ReadLine();
-        reader.ReadLine();
-        string fullLine = reader.ReadLine();
-        string[] line = fullLine.Split(" ");
-        vertexCount = int.Parse(line[2]);
-        Debug.Log(vertexCount);
-        reader.ReadLine();
-        reader.ReadLine();
-        reader.ReadLine();
-        reader.ReadLine();
-        reader.ReadLine();
-        reader.ReadLine();
-        reader.ReadLine();
-        /*
-        7 "reader.ReadLines" dumps the header because we are 
-        guranteeing that there will be these described components in the file. 
-        Therefore we only need to get the vertex count inorder for the following
-        loop to run for a single frame.
-        */
-        for (int i = 0; i < vertexCount; i++) //Added minus one just in case there might be index out of bounds error.
+        string line = reader.ReadLine();
+        if (!line.Equals("ply"))
+        {
+            throw new FormatException("Header not found.");
+        }
+
+        header = new List<string>();
+        while (!line.Equals("end_header"))
+        {
+            line = reader.ReadLine();
+            header.Add(line);
+        }
+
+        vertexCount = int.Parse(header.Find(s => s.StartsWith("element vertex")).Split(" ")[2]);
+
+        for (int i = 0; i < vertexCount; i++)
         {
             string currentLine = reader.ReadLine();
             string[] lineContents = currentLine.Split(" ");
@@ -74,8 +76,9 @@ public class PLYSequenceReader : MonoBehaviour
             float x = float.Parse(lineContents[0]);
             float y = float.Parse(lineContents[1]);
             float z = float.Parse(lineContents[2]);
-            vertices.Add(new Vector3(x, y, z)); //Add the new Vector3 that describes the point in space to the vector Array.
-            
+            vertices.Add(new Vector3(x, y,
+                z)); //Add the new Vector3 that describes the point in space to the vector Array.
+
             /*
             Now we grab the color from the file.
             */
@@ -83,7 +86,7 @@ public class PLYSequenceReader : MonoBehaviour
             float g = float.Parse(lineContents[4]);
             float b = float.Parse(lineContents[5]);
             // Divide each color component by 255 to allow the Color constructor to parse correctly.
-            colors.Add(new Color(r/255f, g/255f, b/255f));
+            colors.Add(new Color(r / 255f, g / 255f, b / 255f));
         }
     }
 
@@ -94,14 +97,16 @@ public class PLYSequenceReader : MonoBehaviour
     private void GenerateMeshFromContents()
     {
         int[] indices = new int[vertexCount];
-        for(int i = 0; i<vertexCount; i++)
+        for (int i = 0; i < vertexCount; i++)
         {
             indices[i] = i;
         }
+
         if (mesh != null)
         {
             Destroy(mesh);
         }
+
         mesh = new Mesh();
         mesh.vertices = vertices.ToArray();
         mesh.colors = colors.ToArray();
