@@ -65,28 +65,39 @@ public class PLYSequenceReader : MonoBehaviour
         }
 
         vertexCount = int.Parse(header.Find(s => s.StartsWith("element vertex")).Split(" ")[2]);
-
-        for (int i = 0; i < vertexCount; i++)
+        switch (header.Find(s => s.StartsWith("format")))
         {
-            string currentLine = reader.ReadLine();
-            string[] lineContents = currentLine.Split(" ");
-            /*
-            Get the xyz components of the vertice and add it to the List of vertices.
-            */
-            float x = float.Parse(lineContents[0]);
-            float y = float.Parse(lineContents[1]);
-            float z = float.Parse(lineContents[2]);
-            vertices.Add(new Vector3(x, y,
-                z)); //Add the new Vector3 that describes the point in space to the vector Array.
+            case "format ascii 1.0":
+                for (int i = 0; i < vertexCount; i++)
+                {
+                    string currentLine = reader.ReadLine();
+                    string[] lineContents = currentLine.Split(" ");
+                    /*
+                    Get the xyz components of the vertice and add it to the List of vertices.
+                    */
+                    float x = float.Parse(lineContents[0]);
+                    float y = float.Parse(lineContents[1]);
+                    float z = float.Parse(lineContents[2]);
+                    vertices.Add(new Vector3(x, y,
+                        z)); //Add the new Vector3 that describes the point in space to the vector Array.
 
-            /*
-            Now we grab the color from the file.
-            */
-            float r = float.Parse(lineContents[3]);
-            float g = float.Parse(lineContents[4]);
-            float b = float.Parse(lineContents[5]);
-            // Divide each color component by 255 to allow the Color constructor to parse correctly.
-            colors.Add(new Color(r / 255f, g / 255f, b / 255f));
+                    /*
+                    Now we grab the color from the file.
+                    */
+                    float r = float.Parse(lineContents[3]);
+                    float g = float.Parse(lineContents[4]);
+                    float b = float.Parse(lineContents[5]);
+                    // Divide each color component by 255 to allow the Color constructor to parse correctly.
+                    colors.Add(new Color(r / 255f, g / 255f, b / 255f));
+                }
+
+                break;
+            case "format binary_little_endian 1.0":
+                throw new Exception("TODO"); //todo
+            case "format binary_big_endian 1.0":
+                throw new Exception("TODO"); //todo
+            default:
+                throw new FormatException("Could not find file format.");
         }
     }
 
