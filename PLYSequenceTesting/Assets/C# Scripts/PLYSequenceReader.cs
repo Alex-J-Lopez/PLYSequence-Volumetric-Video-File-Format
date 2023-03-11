@@ -6,7 +6,7 @@ using System.Collections.Generic;
 public class PLYSequenceReader : MonoBehaviour
 {
     public string plyFile;
-    public float frameTime;
+    public float frameRate; // Desired frame rate. This will be recalculated into frame time later for invoke repeating.
     private int vertexCount;
     private StreamReader reader;
     private List<Vector3> vertices = new List<Vector3>();
@@ -15,10 +15,12 @@ public class PLYSequenceReader : MonoBehaviour
 
     void Start()
     {
+        float frameTime  = 1/frameRate; // Calculate frame time.
+        // Check if the ply File is null before attempting to open it.
         if (plyFile != null)
         {
             reader = new StreamReader(plyFile);
-            InvokeRepeating("methodRunner", 0f, frameTime);
+            InvokeRepeating("methodRunner", 0f, frameTime); // This invoke repeating method runs once per frame time amount of time.
         }
         else
         {
@@ -26,12 +28,21 @@ public class PLYSequenceReader : MonoBehaviour
         }
     }
 
+    /*
+    This method is responsible for running the get vertex and color method followed by generate mesh 
+    in order to update the mesh once every time the method is called. This method is called by invoke repeating 
+    to simulate a video format.
+    */
     private void methodRunner()
     {
         GetVertexAndColor();
         GenerateMeshFromContents();
     }
 
+    /*
+    This method gets vertex and color information from the ".plys" file and 
+    assigns the data to the verticies and colors List objects.
+    */
     private void GetVertexAndColor()
     {
         reader.ReadLine();
@@ -48,8 +59,10 @@ public class PLYSequenceReader : MonoBehaviour
         reader.ReadLine();
         reader.ReadLine();
         /*
-        7 read lines dumps the header because we are 
-        guranteeing that there will be these described components in the file.
+        7 "reader.ReadLines" dumps the header because we are 
+        guranteeing that there will be these described components in the file. 
+        Therefore we only need to get the vertex count inorder for the following
+        loop to run for a single frame.
         */
         for (int i = 0; i < vertexCount; i++) //Added minus one just in case there might be index out of bounds error.
         {
@@ -69,10 +82,15 @@ public class PLYSequenceReader : MonoBehaviour
             float r = float.Parse(lineContents[3]);
             float g = float.Parse(lineContents[4]);
             float b = float.Parse(lineContents[5]);
+            // Divide each color component by 255 to allow the Color constructor to parse correctly.
             colors.Add(new Color(r/255f, g/255f, b/255f));
         }
     }
 
+    /*
+    This method updates the mesh component of the game object that this script is attached 
+    to. Color and vertex count will be updated upon completion.
+    */
     private void GenerateMeshFromContents()
     {
         int[] indices = new int[vertexCount];
@@ -89,7 +107,7 @@ public class PLYSequenceReader : MonoBehaviour
         mesh.colors = colors.ToArray();
         mesh.SetIndices(indices, MeshTopology.Points, 0);
         GetComponent<MeshFilter>().mesh = mesh;
-        vertices = new List<Vector3>();
-        colors = new List<Color>();
+        vertices.Clear(); // Clear the vertices List to allow new frame to be written.
+        colors.Clear();
     }
 }
