@@ -3,6 +3,7 @@ using System.IO;
 using UnityEngine;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 public class PLYSequenceReader : MonoBehaviour
 {
@@ -97,16 +98,9 @@ public class PLYSequenceReader : MonoBehaviour
         }
 
         int[] indices = new int[vertexCount];
-        for (int i = 0; i < vertexCount; i++)
-        {
-            indices[i] = i;
-        }
+        Parallel.For(0, vertexCount, i => indices[i] = i);
 
-        if (mesh != null)
-        {
-            Destroy(mesh);
-        }
-
+        Destroy(mesh);
         mesh = new Mesh();
         mesh.vertices = vertices.ToArray();
         mesh.colors = colors.ToArray();
