@@ -1,0 +1,3 @@
+[submodule "test-files"]
+	path = test-files
+	url = https://PLYSequence-Volumetric-Video-File-Format@dev.azure.com/PLYSequence-Volumetric-Video-File-Format/PLYSequence/_git/PLYSequence%20Test%20Files
