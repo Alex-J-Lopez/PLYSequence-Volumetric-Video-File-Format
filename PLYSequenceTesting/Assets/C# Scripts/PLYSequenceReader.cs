@@ -9,9 +9,6 @@ public class PLYSequenceReader : MonoBehaviour
 {
     public string plyFile;
 
-    public float
-        frameRate; // Desired frame rate. This will be recalculated into frame time later for invoke repeating.
-
     private StreamReader reader;
     private Mesh mesh;
 
@@ -24,8 +21,22 @@ public class PLYSequenceReader : MonoBehaviour
         if (plyFile != null)
         {
             reader = new StreamReader(plyFile);
+            string line = reader.ReadLine();
+            if (!line.Equals("plys"))
+            {
+                throw new FormatException("File did not have plys header");
+            }
+            
+            List<string> sequenceHeader = new List<string>();
+            
+            while (!line.Equals("end_sequence_header"))
+            {
+                line = reader.ReadLine();
+                sequenceHeader.Add(line);
+            }
+
             InvokeRepeating("renderFrame", 0f,
-                1 / frameRate); // This invoke repeating method runs once per frame time amount of time.
+                1 / float.Parse(sequenceHeader.Find(s => s.StartsWith("framerate ")).Split(' ')[1])); // This invoke repeating method runs once per frame time amount of time.
         }
         else
         {

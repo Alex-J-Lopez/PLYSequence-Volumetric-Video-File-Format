@@ -9,6 +9,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.RadioButton;
+import javafx.scene.control.TextInputDialog;
 import javafx.scene.control.ToggleGroup;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
@@ -64,7 +65,8 @@ public class MainGUIController {
         try {
             plysGenerator = new PLYSGenerator(
                     Objects.requireNonNull(directoryChooser.showDialog(stage).listFiles()),
-                    compressionMode.getSelectedToggle() == gZIPCompression);
+                    compressionMode.getSelectedToggle() == gZIPCompression,
+                    Float.parseFloat(new TextInputDialog().showAndWait().get()));
         } catch (IOException e) {
             new Alert(Alert.AlertType.WARNING, "Could not read directory.").show();
             throw e;

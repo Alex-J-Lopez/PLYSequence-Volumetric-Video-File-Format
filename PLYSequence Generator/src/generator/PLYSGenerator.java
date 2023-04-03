@@ -6,6 +6,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.PrintWriter;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
@@ -53,11 +55,17 @@ public class PLYSGenerator {
      * @param gzip       If GZIP compression should be used.
      * @throws IOException if there was a problem reading or writing.
      */
-    public PLYSGenerator(File[] childFiles, boolean gzip) throws IOException {
+    public PLYSGenerator(File[] childFiles, boolean gzip, float framerate) throws IOException {
         fileCount = childFiles.length;
         
         tempFile = Files.createTempFile(TEMP_PREFIX, PLYS_SUFFIX + (gzip ? ".gz" : ""));
         try (OutputStream outputStream = makeOutputStream(tempFile, gzip)) {
+            PrintWriter printWriter = new PrintWriter(outputStream, true,
+                    StandardCharsets.UTF_8);
+                printWriter.println("plys");
+                printWriter.println("framerate " + framerate);
+                printWriter.println("end_sequence_header");
+            
             for (File file : childFiles) {
                 try (InputStream in = new FileInputStream(file)) {
                     outputStream.write(in.readAllBytes());
@@ -65,6 +73,7 @@ public class PLYSGenerator {
                     numProcessed++;
                 }
             }
+            printWriter.close();
         }
     }
     
