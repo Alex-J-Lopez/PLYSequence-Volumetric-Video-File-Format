@@ -17,6 +17,9 @@ public class PLYSequenceReader : MonoBehaviour
 
     void Start()
     {
+        mesh = new Mesh();
+        mesh.MarkDynamic();
+        GetComponent<MeshFilter>().mesh = mesh;
         // Check if the ply File is null before attempting to open it.
         if (plyFile != null)
         {
@@ -100,11 +103,10 @@ public class PLYSequenceReader : MonoBehaviour
         int[] indices = new int[vertexCount];
         Parallel.For(0, vertexCount, i => indices[i] = i);
 
-        Destroy(mesh);
-        mesh = new Mesh();
+        mesh.Clear();
         mesh.vertices = vertices.ToArray();
         mesh.colors = colors.ToArray();
         mesh.SetIndices(indices, MeshTopology.Points, 0);
-        GetComponent<MeshFilter>().mesh = mesh;
+        
     }
 }
