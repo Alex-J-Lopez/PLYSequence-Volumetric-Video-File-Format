@@ -120,4 +120,9 @@ public class PLYSequenceReader : MonoBehaviour
         mesh.SetIndices(indices, MeshTopology.Points, 0);
         
     }
+
+    private void OnDestroy()
+    {
+        reader.Close();
+    }
 }
