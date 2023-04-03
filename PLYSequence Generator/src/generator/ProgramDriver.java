@@ -17,7 +17,7 @@ import java.util.Objects;
 public class ProgramDriver extends Application {
 
     @Override
-    public void start(Stage primaryStage) throws java.io.IOException {
+    public void start(final Stage primaryStage) throws java.io.IOException {
         FXMLLoader.load(
                 Objects.requireNonNull(getClass().getResource("MainGUI.fxml")));
     }

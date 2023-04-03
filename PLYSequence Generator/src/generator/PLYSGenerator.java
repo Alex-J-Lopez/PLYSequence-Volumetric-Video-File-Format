@@ -53,21 +53,21 @@ public class PLYSGenerator {
      *
      * @param childFiles the PLY files to use to generate.
      * @param gzip       If GZIP compression should be used.
+     * @param framerate  the framerate of the PLYS file.
      * @throws IOException if there was a problem reading or writing.
      */
-    public PLYSGenerator(File[] childFiles, boolean gzip, float framerate) throws IOException {
+    public PLYSGenerator(final File[] childFiles, final boolean gzip, final float framerate)
+            throws IOException {
         fileCount = childFiles.length;
-        
         tempFile = Files.createTempFile(TEMP_PREFIX, PLYS_SUFFIX + (gzip ? ".gz" : ""));
-        try (OutputStream outputStream = makeOutputStream(tempFile, gzip)) {
-            PrintWriter printWriter = new PrintWriter(outputStream, true,
-                    StandardCharsets.UTF_8);
-                printWriter.println("plys");
-                printWriter.println("framerate " + framerate);
-                printWriter.println("end_sequence_header");
-            
-            for (File file : childFiles) {
-                try (InputStream in = new FileInputStream(file)) {
+        try (final OutputStream outputStream = makeOutputStream(tempFile, gzip)) {
+            final PrintWriter printWriter =
+                    new PrintWriter(outputStream, true, StandardCharsets.UTF_8);
+            printWriter.println("plys");
+            printWriter.println("framerate " + framerate);
+            printWriter.println("end_sequence_header");
+            for (final File file : childFiles) {
+                try (final InputStream in = new FileInputStream(file)) {
                     outputStream.write(in.readAllBytes());
                     outputStream.write(CRLF);
                     numProcessed++;
@@ -85,7 +85,8 @@ public class PLYSGenerator {
      * @return the OutputStream.
      * @throws IOException if there was an IO problem.
      */
-    private static OutputStream makeOutputStream(Path tempFile, boolean gzip) throws IOException {
+    private static OutputStream makeOutputStream(final Path tempFile, final boolean gzip)
+            throws IOException {
         OutputStream outputStream = new FileOutputStream(tempFile.toFile(), true);
         if (gzip) {
             // Note: FilterOutputStream closes its filtered stream with itself.
@@ -100,7 +101,7 @@ public class PLYSGenerator {
      * @param newFile the file to save to.
      * @throws IOException if there was a problem saving the file.
      */
-    public void save(File newFile) throws IOException {
+    public void save(final File newFile) throws IOException {
         if (saved) {
             throw new IllegalStateException("File was already saved.");
         }
