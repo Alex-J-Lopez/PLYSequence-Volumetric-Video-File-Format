@@ -11,6 +11,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
+import java.util.Arrays;
 import java.util.zip.GZIPOutputStream;
 
 /**
@@ -60,6 +61,7 @@ public class PLYSGenerator {
             throws IOException {
         fileCount = childFiles.length;
         tempFile = Files.createTempFile(TEMP_PREFIX, PLYS_SUFFIX + (gzip ? ".gz" : ""));
+        Arrays.sort(childFiles);
         try (final OutputStream outputStream = makeOutputStream(tempFile, gzip)) {
             final PrintWriter printWriter =
                     new PrintWriter(outputStream, true, StandardCharsets.UTF_8);
