@@ -1,0 +1,40 @@
+[gd_scene load_steps=5 format=3 uid="uid://t03vnlo7x0in"]
+
+[ext_resource type="PackedScene" uid="uid://diyu06cw06syv" path="res://addons/godot-xr-tools/player/player_body.tscn" id="3_8sni7"]
+[ext_resource type="Script" path="res://PLYS Playback.gd" id="4_85q5q"]
+
+[sub_resource type="Environment" id="Environment_g50dm"]
+ambient_light_source = 2
+ambient_light_color = Color(1, 1, 1, 1)
+adjustment_enabled = true
+adjustment_brightness = 1.23
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_jd30g"]
+size = Vector3(100, 1, 100)
+
+[node name="Node3D" type="Node3D"]
+
+[node name="XROrigin3D" type="XROrigin3D" parent="."]
+
+[node name="XRCamera3D" type="XRCamera3D" parent="XROrigin3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.7, 0)
+
+[node name="PlayerBody" parent="XROrigin3D" instance=ExtResource("3_8sni7")]
+
+[node name="OmniLight3D" type="OmniLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.77921, 0)
+omni_range = 4096.0
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_g50dm")
+
+[node name="Floor" type="StaticBody3D" parent="."]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Floor"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
+shape = SubResource("BoxShape3D_jd30g")
+
+[node name="PLYS Instance" type="MultiMeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.81633, -3.41307)
+script = ExtResource("4_85q5q")
+debug_path = "res://set1.plys"
