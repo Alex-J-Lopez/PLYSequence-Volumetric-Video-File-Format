@@ -2,8 +2,6 @@ class_name PLYSPlayback
 extends MultiMeshInstance3D
 var file: FileAccess
 
-@export_file("*.plys") var debug_path: String
-
 var timer: Timer = Timer.new()
 var mesh: Mesh = SphereMesh.new()
 
@@ -79,4 +77,7 @@ func _ready() -> void:
 	mesh.material = material
 	mesh.radius = 0.01
 	mesh.height = 0.01
-	play(debug_path)
+
+
+func _on_file_dialog_file_selected(path: String) -> void:
+	play(path)

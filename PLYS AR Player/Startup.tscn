@@ -37,4 +37,15 @@ shape = SubResource("BoxShape3D_jd30g")
 [node name="PLYS Instance" type="MultiMeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.81633, -3.41307)
 script = ExtResource("4_85q5q")
-debug_path = "res://set1.plys"
+
+[node name="FileDialog" type="FileDialog" parent="."]
+title = "Open a File"
+position = Vector2i(16, 42)
+size = Vector2i(511, 300)
+visible = true
+ok_button_text = "Play"
+file_mode = 0
+access = 2
+filters = PackedStringArray("*.plys")
+
+[connection signal="file_selected" from="FileDialog" to="PLYS Instance" method="_on_file_dialog_file_selected"]
