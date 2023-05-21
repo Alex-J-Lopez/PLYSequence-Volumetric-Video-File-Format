@@ -11,6 +11,7 @@ import javafx.scene.control.ProgressBar;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
+import javafx.scene.image.Image;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -54,6 +55,8 @@ public class MainGUIController {
      * This method initializes the controller.
      */
     public void initialize() {
+        stage.getIcons().add(new Image(Objects.requireNonNull(
+                getClass().getResourceAsStream("_79dfd790-2530-4eb1-bf91-7df525fb9022.jpeg"))));
         stage.show();
     }
     
@@ -78,14 +81,12 @@ public class MainGUIController {
                 throw e;
             }
             final FileChooser fileChooser = new FileChooser();
-            final FileChooser.ExtensionFilter extensionFilter;
-            if (compressionMode.getSelectedToggle() == gZIPCompression) {
-                extensionFilter = new FileChooser.ExtensionFilter("Compressed PLYS",
-                        '*' + PLYSGenerator.PLYS_SUFFIX + ".gz");
-            } else {
-                extensionFilter =
-                        new FileChooser.ExtensionFilter("PLYS", '*' + PLYSGenerator.PLYS_SUFFIX);
-            }
+            final FileChooser.ExtensionFilter extensionFilter =
+                    compressionMode.getSelectedToggle() == gZIPCompression ?
+                            new FileChooser.ExtensionFilter("Compressed PLYS",
+                                    '*' + PLYSGenerator.PLYS_SUFFIX + ".gz") :
+                            new FileChooser.ExtensionFilter("PLYS",
+                                    '*' + PLYSGenerator.PLYS_SUFFIX);
             fileChooser.getExtensionFilters().add(extensionFilter);
             fileChooser.setSelectedExtensionFilter(extensionFilter);
             fileChooser.setTitle("Choose save destination");
