@@ -5,7 +5,10 @@ var file: FileAccess
 var timer: Timer = Timer.new()
 var mesh: Mesh = SphereMesh.new()
 
-func play(path: String):
+signal playbackStart()
+signal playbackEnd()
+
+func play(path: String) -> int:
 	file = FileAccess.open(path, FileAccess.READ)
 	if file == null :
 		push_error("PLYSPlayback: File could not be opened")
@@ -17,9 +20,13 @@ func play(path: String):
 	var framedelay: float = 1 / sequenceHeaders["framerate"][0].to_float()
 	print("Frame delay: " + str(framedelay))
 	timer.start(framedelay)
+	playbackStart.emit()
+	return OK
 	
-func renderFrame(): 
-	if file.get_position() > file.get_length():
+	
+	
+func renderFrame() -> void: 
+	if file.get_position() >= file.get_length():
 		print("End of file reached")
 		cleanup()
 	print("Starting frame render")
@@ -31,7 +38,7 @@ func renderFrame():
 	if line != "ply":
 		push_error("PLYSPlayback: File is not a PLY file, got: " + line)
 		cleanup()
-		return ERR_FILE_UNRECOGNIZED
+		return
 	var headers: Dictionary = getHeader()
 	var vertexCount: int
 	for header in headers["element"]:
@@ -40,7 +47,7 @@ func renderFrame():
 			break
 	if vertexCount == null:
 		push_error("PLYSPlayback: No vertex count found")
-		return ERR_FILE_CORRUPT
+		return
 	print("Frame has " + str(vertexCount) + " vertices")
 	multimesh.instance_count = vertexCount
 	for i in range(vertexCount):
@@ -55,6 +62,8 @@ func renderFrame():
 func cleanup() -> void:
 	timer.stop()
 	file.close()
+	print("Playback stopped")
+	playbackEnd.emit()
 
 func getHeader() -> Dictionary:
 	var line: String = file.get_line()
@@ -77,6 +86,8 @@ func _ready() -> void:
 	mesh.material = material
 	mesh.radius = 0.01
 	mesh.height = 0.01
+	mesh.radial_segments = 1
+	mesh.rings = 1
 
 
 func _on_file_dialog_file_selected(path: String) -> void:
