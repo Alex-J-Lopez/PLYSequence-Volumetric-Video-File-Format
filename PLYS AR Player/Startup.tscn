@@ -1,7 +1,8 @@
-[gd_scene load_steps=7 format=3 uid="uid://t03vnlo7x0in"]
+[gd_scene load_steps=8 format=3 uid="uid://t03vnlo7x0in"]
 
 [ext_resource type="PackedScene" uid="uid://diyu06cw06syv" path="res://addons/godot-xr-tools/player/player_body.tscn" id="3_8sni7"]
 [ext_resource type="PackedScene" uid="uid://ctltchlf2j2r4" path="res://addons/xr-simulator/XRSimulator.tscn" id="3_kxyux"]
+[ext_resource type="Script" path="res://FileDialogControl.gd" id="3_x8nm6"]
 [ext_resource type="Script" path="res://XRSimulatorToggle.gd" id="4_7e8py"]
 [ext_resource type="Script" path="res://PLYS Playback.gd" id="4_85q5q"]
 
@@ -51,6 +52,7 @@ mode_overrides_title = false
 file_mode = 0
 access = 2
 filters = PackedStringArray("*.plys")
+script = ExtResource("3_x8nm6")
 
 [node name="XRSimulator" parent="." instance=ExtResource("3_kxyux")]
 enabled = false
@@ -59,6 +61,8 @@ xr_origin = NodePath("../XROrigin3D")
 [node name="Simulator Toggle" type="Node" parent="XRSimulator"]
 script = ExtResource("4_7e8py")
 
+[connection signal="playbackEnd" from="PLYS Instance" to="FileDialog" method="_on_plys_instance_playback_end"]
 [connection signal="playbackEnd" from="PLYS Instance" to="XRSimulator/Simulator Toggle" method="_on_plys_instance_playback_end"]
 [connection signal="playbackStart" from="PLYS Instance" to="XRSimulator/Simulator Toggle" method="_on_plys_instance_playback_start"]
+[connection signal="canceled" from="FileDialog" to="FileDialog" method="_on_canceled"]
 [connection signal="file_selected" from="FileDialog" to="PLYS Instance" method="_on_file_dialog_file_selected"]
