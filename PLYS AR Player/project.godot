@@ -23,6 +23,10 @@ XRToolsUserSettings="*res://addons/godot-xr-tools/user_settings/user_settings.gd
 
 enabled=PackedStringArray("res://addons/godot-xr-tools/plugin.cfg")
 
+[rendering]
+
+environment/defaults/default_clear_color=Color(0.301961, 0.301961, 0.301961, 0)
+
 [xr]
 
 openxr/enabled=true

@@ -18,7 +18,6 @@ func play(path: String) -> int:
 		return ERR_FILE_UNRECOGNIZED
 	var sequenceHeaders: Dictionary = getHeader()
 	var framedelay: float = 1 / sequenceHeaders["framerate"][0].to_float()
-	print("Frame delay: " + str(framedelay))
 	timer.start(framedelay)
 	playbackStart.emit()
 	return OK
@@ -29,7 +28,6 @@ func renderFrame() -> void:
 	if file.get_position() >= file.get_length():
 		print("End of file reached")
 		cleanup()
-	print("Starting frame render")
 	multimesh = MultiMesh.new()
 	multimesh.mesh = mesh
 	multimesh.use_colors = true
@@ -48,7 +46,6 @@ func renderFrame() -> void:
 	if vertexCount == null:
 		push_error("PLYSPlayback: No vertex count found")
 		return
-	print("Frame has " + str(vertexCount) + " vertices")
 	multimesh.instance_count = vertexCount
 	for i in range(vertexCount):
 		line = file.get_line()
@@ -57,7 +54,6 @@ func renderFrame() -> void:
 		multimesh.set_instance_transform(i, Transform3D().translated(Vector3(split[0].to_float(), split[1].to_float(), split[2].to_float())))
 		multimesh.set_instance_color(i, Color8(split[3].to_int(), split[4].to_int(), split[5].to_int()))
 	file.get_line()
-	print("Frame render complete")
 
 func cleanup() -> void:
 	timer.stop()
@@ -70,7 +66,6 @@ func getHeader() -> Dictionary:
 	var headers: Dictionary = {}
 	while line != "end_sequence_header" && line != "end_header":
 		var split = line.split(" ", false, 1)
-		print("Reading header: " + str(split))
 		if !headers.has(split[0]):
 			headers[split[0]] = PackedStringArray()
 		headers[split[0]].push_back(split[1])
@@ -84,8 +79,8 @@ func _ready() -> void:
 	material.vertex_color_use_as_albedo = true
 	material.albedo_color = Color.WHITE
 	mesh.material = material
-	mesh.radius = 0.01
-	mesh.height = 0.01
+	mesh.radius = 0.007
+	mesh.height = 0.007
 	mesh.radial_segments = 1
 	mesh.rings = 1
 
